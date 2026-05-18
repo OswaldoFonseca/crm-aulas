@@ -1,18 +1,21 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 
 export default function NavBar() {
-  const router = useRouter()
   const pathname = usePathname()
 
   async function handleSignOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+    } catch {
+      // sign-out error — proceed with redirect anyway
+    } finally {
+      window.location.href = '/login'
+    }
   }
 
   const linkClass = (href: string) =>
