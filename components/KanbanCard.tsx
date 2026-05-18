@@ -35,7 +35,7 @@ export default function KanbanCard({ deal, onEdit, onDelete }: Props) {
           </p>
           {deal.valor != null && (
             <p className="text-xs font-semibold text-gray-700 mt-1">
-              R$ {deal.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {Number(deal.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           )}
         </div>

@@ -14,10 +14,10 @@ export default async function DashboardPage() {
   const supabase = await createClient()
 
   const [
-    { count: totalAtivos },
-    { count: totalAbertos },
-    { data: valorRows },
-    { count: totalFechados },
+    { count: totalAtivos, error: err1 },
+    { count: totalAbertos, error: err2 },
+    { data: valorRows, error: err3 },
+    { count: totalFechados, error: err4 },
   ] = await Promise.all([
     supabase.from('clientes').select('*', { count: 'exact', head: true }).eq('status', 'ativo'),
     supabase.from('deals').select('*', { count: 'exact', head: true }).neq('etapa', 'Fechado'),
@@ -25,7 +25,9 @@ export default async function DashboardPage() {
     supabase.from('deals').select('*', { count: 'exact', head: true }).eq('etapa', 'Fechado'),
   ])
 
-  const valorTotal = (valorRows ?? []).reduce((sum, row) => sum + (row.valor ?? 0), 0)
+  if (err1 || err2 || err3 || err4) throw err1 ?? err2 ?? err3 ?? err4
+
+  const valorTotal = (valorRows ?? []).reduce((sum, row) => sum + Number(row.valor ?? 0), 0)
 
   return (
     <div>

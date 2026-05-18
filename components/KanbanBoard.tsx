@@ -44,8 +44,6 @@ export default function KanbanBoard({ initialDeals, clientes }: Props) {
     if (error) {
       setDeals(prev => prev.map(d => d.id === dealId ? { ...d, etapa: deal.etapa } : d))
       alert('Erro ao atualizar etapa. Tente novamente.')
-    } else {
-      router.refresh()
     }
   }
 
