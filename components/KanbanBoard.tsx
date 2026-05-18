@@ -34,7 +34,7 @@ export default function KanbanBoard({ initialDeals, clientes }: Props) {
     const dealId = active.id as string
     const novaEtapa = over.id as DealEtapa
     const deal = deals.find(d => d.id === dealId)
-    if (!deal || deal.etapa === novaEtapa) return
+    if (!deal || deal.etapa === novaEtapa || !ETAPAS.includes(novaEtapa)) return
 
     setDeals(prev => prev.map(d => d.id === dealId ? { ...d, etapa: novaEtapa } : d))
 
