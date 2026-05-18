@@ -13,6 +13,7 @@ interface Props {
 export default function ClientesTable({ clientes }: Props) {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingCliente, setEditingCliente] = useState<Cliente | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
   const router = useRouter()
 
   function openCreate() {
@@ -26,14 +27,18 @@ export default function ClientesTable({ clientes }: Props) {
   }
 
   async function handleDelete(id: string) {
+    if (deleting) return
     if (!confirm('Tem certeza que deseja excluir este cliente?')) return
+    setDeleting(id)
     const supabase = createClient()
     const { error } = await supabase.from('clientes').delete().eq('id', id)
     if (error) {
       alert('Erro ao excluir. Tente novamente.')
+      setDeleting(null)
       return
     }
     router.refresh()
+    setDeleting(null)
   }
 
   function handleSaved() {
@@ -91,7 +96,7 @@ export default function ClientesTable({ clientes }: Props) {
                   <button onClick={() => openEdit(cliente)} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                     Editar
                   </button>
-                  <button onClick={() => handleDelete(cliente.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
+                  <button onClick={() => handleDelete(cliente.id)} disabled={deleting === cliente.id} className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50">
                     Excluir
                   </button>
                 </td>
