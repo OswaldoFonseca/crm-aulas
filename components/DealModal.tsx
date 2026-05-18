@@ -37,12 +37,16 @@ export default function DealModal({ deal, clientes, onClose, onSaved }: Props) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  function handleEtapaChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    setForm(prev => ({ ...prev, etapa: e.target.value as DealEtapa }))
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
 
     const valorNum = form.valor !== '' ? parseFloat(form.valor) : null
-    if (valorNum !== null && valorNum < 0) {
+    if (valorNum !== null && (isNaN(valorNum) || valorNum < 0)) {
       setError('O valor não pode ser negativo.')
       return
     }
@@ -106,7 +110,7 @@ export default function DealModal({ deal, clientes, onClose, onSaved }: Props) {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Etapa <span className="text-red-500">*</span>
               </label>
-              <select name="etapa" value={form.etapa} onChange={handleChange}
+              <select name="etapa" value={form.etapa} onChange={handleEtapaChange}
                 className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
                 {ETAPAS.map(e => <option key={e} value={e}>{e}</option>)}
               </select>
