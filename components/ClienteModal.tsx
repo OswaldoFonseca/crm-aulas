@@ -66,6 +66,7 @@ export default function ClienteModal({ cliente, onClose, onSaved }: Props) {
       return
     }
 
+    setLoading(false)
     onSaved()
   }
 
@@ -116,8 +117,8 @@ export default function ClienteModal({ cliente, onClose, onSaved }: Props) {
             </div>
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
-              <button type="button" onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+              <button type="button" onClick={onClose} disabled={loading}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors">
                 Cancelar
               </button>
               <button type="submit" disabled={loading}
