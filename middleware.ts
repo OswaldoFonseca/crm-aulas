@@ -31,13 +31,21 @@ export async function middleware(request: NextRequest) {
   if (!user && !isLoginPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
-    return NextResponse.redirect(url)
+    const redirectToLogin = NextResponse.redirect(url)
+    supabaseResponse.cookies.getAll().forEach(cookie =>
+      redirectToLogin.cookies.set(cookie.name, cookie.value, cookie)
+    )
+    return redirectToLogin
   }
 
   if (user && isLoginPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+    const redirectToDashboard = NextResponse.redirect(url)
+    supabaseResponse.cookies.getAll().forEach(cookie =>
+      redirectToDashboard.cookies.set(cookie.name, cookie.value, cookie)
+    )
+    return redirectToDashboard
   }
 
   return supabaseResponse
