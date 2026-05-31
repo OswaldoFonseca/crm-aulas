@@ -45,9 +45,14 @@ export default function DealModal({ deal, clientes, onClose, onSaved }: Props) {
     e.preventDefault()
     setError(null)
 
+    if (!form.titulo.trim()) {
+      setError('O título não pode estar em branco.')
+      return
+    }
+
     const valorNum = form.valor !== '' ? parseFloat(form.valor) : null
-    if (valorNum !== null && (isNaN(valorNum) || valorNum < 0)) {
-      setError('O valor não pode ser negativo.')
+    if (valorNum !== null && (!Number.isFinite(valorNum) || valorNum < 0)) {
+      setError('O valor deve ser um número positivo válido.')
       return
     }
 
@@ -62,11 +67,11 @@ export default function DealModal({ deal, clientes, onClose, onSaved }: Props) {
     }
 
     const supabase = createClient()
-    const { error } = deal
+    const { error: saveError } = deal
       ? await supabase.from('deals').update(payload).eq('id', deal.id)
       : await supabase.from('deals').insert(payload)
 
-    if (error) {
+    if (saveError) {
       setError('Erro ao salvar. Tente novamente.')
       setLoading(false)
       return

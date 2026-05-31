@@ -41,7 +41,7 @@ export default function KanbanCard({ deal, onEdit, onDelete }: Props) {
         </div>
         <div className="flex gap-1 flex-shrink-0 pt-0.5">
           <button onClick={() => onEdit(deal)} className="text-blue-500 hover:text-blue-700 text-xs p-1" title="Editar">✏</button>
-          <button onClick={() => onDelete(deal.id)} className="text-red-500 hover:text-red-700 text-xs p-1" title="Excluir">✕</button>
+          <button onClick={() => { if (confirm('Excluir esta oportunidade?')) onDelete(deal.id) }} className="text-red-500 hover:text-red-700 text-xs p-1" title="Excluir">✕</button>
         </div>
       </div>
     </div>
