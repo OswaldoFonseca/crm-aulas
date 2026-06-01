@@ -8,15 +8,30 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isSignUp, setIsSignUp] = useState(false)
   const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setSuccess(null)
     setLoading(true)
 
     const supabase = createClient()
+
+    if (isSignUp) {
+      const { error } = await supabase.auth.signUp({ email, password })
+      if (error) {
+        setError('Erro ao criar conta. Tente novamente.')
+      } else {
+        setSuccess('Conta criada! Verifique seu email para confirmar o cadastro.')
+      }
+      setLoading(false)
+      return
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
@@ -33,7 +48,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        <h2 className="text-2xl font-bold text-center text-gray-900">CRM — Entrar</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-900">
+          {isSignUp ? 'CRM — Criar conta' : 'CRM — Entrar'}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
@@ -58,14 +75,25 @@ export default function LoginPage() {
             />
           </div>
           {error && <p className="text-red-600 text-sm">{error}</p>}
+          {success && <p className="text-green-600 text-sm">{success}</p>}
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? '...' : isSignUp ? 'Criar conta' : 'Entrar'}
           </button>
         </form>
+        <p className="text-center text-sm text-gray-600">
+          {isSignUp ? 'Já tem conta?' : 'Não tem conta?'}{' '}
+          <button
+            type="button"
+            onClick={() => { setIsSignUp(!isSignUp); setError(null); setSuccess(null) }}
+            className="text-blue-600 hover:underline"
+          >
+            {isSignUp ? 'Entrar' : 'Criar conta'}
+          </button>
+        </p>
       </div>
     </div>
   )
